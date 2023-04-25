@@ -17,7 +17,8 @@ socket.on('connect', function () {
 
     // si se conecta, callback function y decir que hacer ( resp es del server)
     socket.emit('usuarioConectado', user, function (resp) {
-        console.log('Usuarios conectados', resp);
+        // console.log('Usuarios conectados', resp);
+        renderizarUsuarios(resp)
     })
 });
 
@@ -39,11 +40,13 @@ socket.on('mensajePrivado', function (privateDm) {
 // });
 
 socket.on('crearMensaje', function (message) {
-    console.log('Servidor:', message);
+    renderizarMensajes(message, false)
+    scrollBottom()
 });
 socket.on('user-connected', function (connected) {
-    console.log('Servidor:', connected);
+    console.log(connected);
+    renderizarMensajes(connected, false)
 });
 socket.on('listOfUsers', function (people) {
-    console.log('Servidor:', people);
+    renderizarUsuarios(people)
 });

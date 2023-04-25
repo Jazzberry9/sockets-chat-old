@@ -16,16 +16,18 @@ io.on('connection', (client) => {
         client.join(sala)
         let persons = user.agregarPersona(client.id, nombre, sala)
         client.broadcast.to(sala).emit('listOfUsers', user.getPersonasPorSala(sala))
-        client.broadcast.to(sala).emit('user-connected', { user: 'Administrador', mensaje: `${persons.nombre} se unio al chat.` })
+        client.broadcast.to(sala).emit('user-connected', createMessage('Administrador', `${persons.nombre} se unio al chat.`))
         cb(user.getPersonasPorSala(sala))
     })
 
-    // client.on('crearMensaje', (payload) => {
-    //     const { mensaje } = payload;
-    //     const person = user.getPersona(client.id)
-    //     const message = createMessage(person.nombre, mensaje)
-    //     client.broadcast.to(person.sala).emit('crearMensaje', message)
-    // })
+    client.on('crearMensaje', (payload, callback) => {
+        const { mensaje } = payload;
+        const person = user.getPersona(client.id)
+        const message = createMessage(person.nombre, mensaje)
+        client.broadcast.to(person.sala).emit('crearMensaje', message)
+
+        callback(message)
+    })
 
     // mensajes privados
     client.on('mensajePrivado', payload => {
